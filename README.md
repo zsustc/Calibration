@@ -23,6 +23,7 @@
   
   "Usage: calibration\n"
         "     -w=<board_width>         # the number of inner corners per one of board dimension\n"
+        
         "     -h=<board_height>        # the number of inner corners per another board dimension\n"
         "     [-pt=<pattern>]          # the type of pattern: chessboard or circles' grid\n"
         "     [-n=<number_of_frames>]  # the number of frames to use for calibration\n"
