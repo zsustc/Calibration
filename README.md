@@ -121,3 +121,5 @@ cameraMatrix	Intrinsic camera matrix
 distCoeffs	Lens distortion coefficients.
 rvecs	Rotation specified as a 3×1 vector. The direction of the vector specifies the axis of rotation and the magnitude of the vector specifies the angle of rotation.
 tvecs	3×1 Translation vector.
+  
+ **9. Trying different configuring parameters to compare the different returned re-projection error and validate the calibrated parameters.**
