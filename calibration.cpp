@@ -65,7 +65,7 @@ static void help()
 }
 
 enum { DETECTION = 0, CAPTURING = 1, CALIBRATED = 2 };
-enum Pattern { CHESSBOARD, CIRCLES_GRID, ASYMMETRIC_CIRCLES_GRID };
+enum Pattern { CHESSBOARD, CIRCLES_GRID};
 
 static double computeReprojectionErrors(
         const vector<vector<Point3f> >& objectPoints,
@@ -93,6 +93,9 @@ static double computeReprojectionErrors(
     return std::sqrt(totalErr/totalPoints);
 }
 
+/*****************************************************************************************************************************/
+// Define 3D world coordinates with phantom pattern*
+/*****************************************************************************************************************************/
 static void calcChessboardCorners(Size boardSize, float squareSize, vector<Point3f>& corners, Pattern patternType = CHESSBOARD)
 {
     corners.resize(0);
@@ -101,19 +104,10 @@ static void calcChessboardCorners(Size boardSize, float squareSize, vector<Point
     {
       case CHESSBOARD:
       case CIRCLES_GRID:
-        for( int i = 0; i < boardSize.height; i++ )
-            for( int j = 0; j < boardSize.width; j++ )
-                corners.push_back(Point3f(float(j*squareSize),
-                                          float(i*squareSize), 0));
+/********************************************************************************************************************/
+            /* please finish the function code here and push back the computed points to the vector "corners" */
+/********************************************************************************************************************/
         break;
-
-      case ASYMMETRIC_CIRCLES_GRID:
-        for( int i = 0; i < boardSize.height; i++ )
-            for( int j = 0; j < boardSize.width; j++ )
-                corners.push_back(Point3f(float((2*j + i % 2)*squareSize),
-                                          float(i*squareSize), 0));
-        break;
-
       default:
         CV_Error(Error::StsBadArg, "Unknown pattern type\n");
     }
@@ -140,11 +134,12 @@ static bool runCalibration( vector<vector<Point2f> > imagePoints,
     objectPoints.resize(imagePoints.size(),objectPoints[0]);
 
     /* Performing camera calibration by passing the value of known 3D points (objectPoints) and corresponding pixel
+    
      * coordinates of the detected corners (imagePoints) */
-
-    double rms = calibrateCamera(objectPoints, imagePoints, imageSize, cameraMatrix,
-                    distCoeffs, rvecs, tvecs, flags|CALIB_FIX_K4|CALIB_FIX_K5);
-                    ///*|CALIB_FIX_K3*/|CALIB_FIX_K4|CALIB_FIX_K5);
+/********************************************************************************************************************/
+    /* please try to call the calibrateCamera function here and return its value to the varibale "rms" */
+/********************************************************************************************************************/
+    
     printf("RMS error reported by calibrateCamera: %g\n", rms);
 
     bool ok = checkRange(cameraMatrix) && checkRange(distCoeffs);
@@ -317,8 +312,6 @@ int main( int argc, char** argv )
         string val = parser.get<string>("pt");
         if( val == "circles" )
             pattern = CIRCLES_GRID;
-        else if( val == "acircles" )
-            pattern = ASYMMETRIC_CIRCLES_GRID;
         else if( val == "chessboard" )
             pattern = CHESSBOARD;
         else
@@ -404,10 +397,9 @@ int main( int argc, char** argv )
                     CALIB_CB_ADAPTIVE_THRESH | CALIB_CB_FAST_CHECK | CALIB_CB_NORMALIZE_IMAGE);
                 break;
             case CIRCLES_GRID:
-                found = findCirclesGrid( view, boardSize, pointbuf );
-                break;
-            case ASYMMETRIC_CIRCLES_GRID:
-                found = findCirclesGrid( view, boardSize, pointbuf, CALIB_CB_ASYMMETRIC_GRID );
+/********************************************************************************************************************/
+                /* please try to call findCirclesGrid here and return its value to the vairable "found" */
+/********************************************************************************************************************/
                 break;
             default:
                 return fprintf( stderr, "Unknown pattern type\n" ), -1;
