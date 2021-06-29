@@ -1,3 +1,4 @@
+![Picture2](https://user-images.githubusercontent.com/25130068/123815260-ecd17000-d928-11eb-8270-e9f5188fe3a1.jpg)
 **Calibration-of-a-C-arm-x-ray-device-Winter-school**
   Authors: Shuai Zhang
 
