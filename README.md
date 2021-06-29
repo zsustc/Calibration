@@ -97,9 +97,6 @@ Sample usage of detecting and drawing the centers of circles: :
     vector<Point2f> centers; //this will be filled by the detected centers
 
     bool patternfound = findCirclesGrid(gray, patternsize, centers);
-
-    drawChessboardCorners(img, patternsize, Mat(centers), patternfound);
-@endcode
   
   CV_EXPORTS_W bool findCirclesGrid( InputArray image, Size patternSize,
                                    OutputArray centers, int flags = CALIB_CB_SYMMETRIC_GRID,
