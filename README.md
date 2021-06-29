@@ -1,4 +1,3 @@
-![Picture2](https://user-images.githubusercontent.com/25130068/123815260-ecd17000-d928-11eb-8270-e9f5188fe3a1.jpg)
 **Calibration-of-a-C-arm-x-ray-device-Winter-school**
   Authors: Shuai Zhang
 
@@ -8,7 +7,10 @@
   The cropped images can be found in the folder "uncalibrated", the size is 1024*1024.
   You should use the cropped images since the original images contain extra border illustrating some patient related information.
   
-  The calibration phantom consists of an acrylic plate (10cm * 10 cm, thickness 4mm) and 25 stainless steel spheres (diameter: 3mm).![Picture1](https://user-images.githubusercontent.com/25130068/123815079-c6abd000-d928-11eb-848d-bfd61bbc1d70.png)
+  The calibration phantom consists of an acrylic plate (10cm * 10 cm, thickness 4mm) and 25 stainless steel spheres (diameter: 3mm).
+ ![Picture1](https://user-images.githubusercontent.com/25130068/123815079-c6abd000-d928-11eb-848d-bfd61bbc1d70.png)
+
+![Picture2](https://user-images.githubusercontent.com/25130068/123815260-ecd17000-d928-11eb-8270-e9f5188fe3a1.jpg)
 
 **2. Prerequisites**
 
