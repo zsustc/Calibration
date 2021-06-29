@@ -3,11 +3,11 @@
 
 **1. Datasets**
 
-  The original images captured from the C-arm device can be found in the folder "original_images_uncropped", the size is 1280*1024;
-  The cropped images can be found in the folder "uncalibrated", the size is 1024*1024.
+  The original images captured from the C-arm device can be found in the folder "original_images_uncropped", the size is 1280 x 1024;
+  The cropped images can be found in the folder "uncalibrated", the size is 1024 x 1024.
   You should use the cropped images since the original images contain extra border illustrating some patient related information.
   
-  The calibration phantom consists of an acrylic plate (10cm * 10 cm, thickness 4mm) and 25 stainless steel spheres (diameter: 3mm).
+  The calibration phantom consists of an acrylic plate (10cm x 10 cm, thickness 4mm) and 25 stainless steel spheres (diameter: 3mm).
 ![image](https://user-images.githubusercontent.com/25130068/123815919-741ee380-d929-11eb-8648-9dbe8c5b00c3.png)
 
 **2. Prerequisites**
