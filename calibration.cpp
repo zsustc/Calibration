@@ -15,10 +15,7 @@ using namespace cv;
 using namespace std;
 
 const char * usage =
-" \nexample command line for calibration from a live feed.\n"
-"   calibration  -w=4 -h=5 -s=0.025 -o=camera.yml -op -oe\n"
-" \n"
-" example command line for calibration from a list of stored images:\n"
+" \nexample command line for calibration from a list of stored images:\n"
 "   imagelist_creator image_list.xml *.png\n"
 "   calibration -w=4 -h=5 -s=0.025 -o=camera.yml -op -oe image_list.xml\n"
 " where image_list.xml is the standard OpenCV XML/YAML\n"
@@ -37,15 +34,6 @@ const char * usage =
 "</images>\n"
 "</opencv_storage>\n";
 
-
-
-
-const char* liveCaptureHelp =
-    "When the live video from camera is used as input, the following hot-keys may be used:\n"
-        "  <ESC>, 'q' - quit the program\n"
-        "  'g' - start capturing images\n"
-        "  'u' - switch undistortion on/off\n";
-
 static void help()
 {
     printf( "This is a camera calibration sample.\n"
@@ -56,7 +44,6 @@ static void help()
         "     [-n=<number_of_frames>]  # the number of frames to use for calibration\n"
         "                              # (if not specified, it will be set to the number\n"
         "                              #  of board views actually available)\n"
-        "     [-d=<delay>]             # a minimum delay in ms between subsequent attempts to capture a next view\n"
         "                              # (used only for video capturing)\n"
         "     [-s=<squareSize>]       # square size in some user-defined units (1 by default)\n"
         "     [-o=<out_camera_params>] # the output filename for intrinsic [and extrinsic] parameters\n"
@@ -66,7 +53,6 @@ static void help()
         "     [-a=<aspectRatio>]      # fix aspect ratio (fx/fy)\n"
         "     [-p]                     # fix the principal point at the center\n"
         "     [-v]                     # flip the captured images around the horizontal axis\n"
-        "     [-V]                     # use a video file, and not an image list, uses\n"
         "                              # [input_data] string for the video file name\n"
         "     [-su]                    # show undistorted images after calibration\n"
         "     [input_data]             # input data, one of the following:\n"
@@ -76,7 +62,6 @@ static void help()
         "                              # if input_data not specified, a live view from the camera is used\n"
         "\n" );
     printf("\n%s",usage);
-    printf( "\n%s", liveCaptureHelp );
 }
 
 enum { DETECTION = 0, CAPTURING = 1, CALIBRATED = 2 };
@@ -149,9 +134,13 @@ static bool runCalibration( vector<vector<Point2f> > imagePoints,
     distCoeffs = Mat::zeros(8, 1, CV_64F);
 
     vector<vector<Point3f> > objectPoints(1);
-    calcChessboardCorners(boardSize, squareSize, objectPoints[0], patternType);
 
+    // Defining the world coordinates for 3D points
+    calcChessboardCorners(boardSize, squareSize, objectPoints[0], patternType);
     objectPoints.resize(imagePoints.size(),objectPoints[0]);
+
+    /* Performing camera calibration by passing the value of known 3D points (objectPoints) and corresponding pixel
+     * coordinates of the detected corners (imagePoints) */
 
     double rms = calibrateCamera(objectPoints, imagePoints, imageSize, cameraMatrix,
                     distCoeffs, rvecs, tvecs, flags|CALIB_FIX_K4|CALIB_FIX_K5);
@@ -306,21 +295,15 @@ int main( int argc, char** argv )
     bool writeExtrinsics, writePoints;
     bool undistortImage = false;
     int flags = 0;
-    VideoCapture capture;
-    bool flipVertical;
     bool showUndistorted;
-    bool videofile;
-    int delay;
-    clock_t prevTimestamp = 0;
     int mode = DETECTION;
-    int cameraId = 0;
-    vector<vector<Point2f> > imagePoints;
+    vector<vector<Point2f> > imagePoints; // Creating vector to store vectors of 2D points for each checkerboard image
     vector<string> imageList;
-    Pattern pattern = CIRCLES_GRID;
+    Pattern pattern = CIRCLES_GRID; // the default pattern type of the calibration board
 
     cv::CommandLineParser parser(argc, argv,
-        "{help ||}{w||}{h||}{pt|chessboard|}{n|10|}{d|1000|}{s|1|}{o|out_camera_data.yml|}"
-        "{op||}{oe||}{zt||}{a|1|}{p||}{v||}{V||}{su||}"
+        "{help ||}{w||}{h||}{pt|chessboard|}{n|10|}{s|1|}{o|out_camera_data.yml|}"
+        "{op||}{oe||}{zt||}{a|1|}{p||}{v||}{su||}"
         "{@input_data|0|}");
     if (parser.has("help"))
     {
@@ -344,7 +327,6 @@ int main( int argc, char** argv )
     squareSize = parser.get<float>("s");
     nframes = parser.get<int>("n");
     aspectRatio = parser.get<float>("a");
-    delay = parser.get<int>("d");
     writePoints = parser.has("op");
     writeExtrinsics = parser.has("oe");
     if (parser.has("a"))
@@ -353,29 +335,24 @@ int main( int argc, char** argv )
         flags |= CALIB_ZERO_TANGENT_DIST;
     if ( parser.has("p") )
         flags |= CALIB_FIX_PRINCIPAL_POINT;
-    flipVertical = parser.has("v");
-    videofile = parser.has("V");
     if ( parser.has("o") )
         outputFilename = parser.get<string>("o");
     showUndistorted = parser.has("su");
-    if ( isdigit(parser.get<string>("@input_data")[0]) )
-        cameraId = parser.get<int>("@input_data");
-    else
-        inputFilename = parser.get<string>("@input_data");
+    inputFilename = parser.get<string>("@input_data");
     if (!parser.check())
     {
         help();
         parser.printErrors();
         return -1;
     }
+
+    // check the validity of the input parameters
     if ( squareSize <= 0 )
         return fprintf( stderr, "Invalid board square width\n" ), -1;
     if ( nframes <= 3 )
         return printf("Invalid number of images\n" ), -1;
     if ( aspectRatio <= 0 )
         return printf( "Invalid aspect ratio\n" ), -1;
-    if ( delay <= 0 )
-        return printf( "Invalid delay\n" ), -1;
     if ( boardSize.width <= 0 )
         return fprintf( stderr, "Invalid board width\n" ), -1;
     if ( boardSize.height <= 0 )
@@ -383,37 +360,24 @@ int main( int argc, char** argv )
 
     if( !inputFilename.empty() )
     {
-        if( !videofile && readStringList(inputFilename, imageList) )
+        if(readStringList(inputFilename, imageList) )
             mode = CAPTURING;
         else
-            capture.open(inputFilename);
+            return 0;
     }
-    else
-        capture.open(cameraId);
-
-    if( !capture.isOpened() && imageList.empty() )
-        return fprintf( stderr, "Could not initialize video (%d) capture\n",cameraId ), -2;
 
     if( !imageList.empty() )
         nframes = (int)imageList.size();
 
-    if( capture.isOpened() )
-        printf( "%s", liveCaptureHelp );
-
     namedWindow( "Image View", 1 );
 
+    // Looping over all the images
     for(i = 0;;i++)
     {
         Mat view, viewGray;
         bool blink = false;
 
-        if( capture.isOpened() )
-        {
-            Mat view0;
-            capture >> view0;
-            view0.copyTo(view);
-        }
-        else if( i < (int)imageList.size() )
+        if( i < (int)imageList.size() )
             view = imread(imageList[i], 1);
 
         if(view.empty())
@@ -428,12 +392,10 @@ int main( int argc, char** argv )
 
         imageSize = view.size();
 
-        if( flipVertical )
-            flip( view, view, 0 );
-
         vector<Point2f> pointbuf;
         cvtColor(view, viewGray, COLOR_BGR2GRAY);
 
+        // Finding checker board corners, if desired number of corners are found in the image then found = true
         bool found;
         switch( pattern )
         {
@@ -455,36 +417,14 @@ int main( int argc, char** argv )
         if( pattern == CHESSBOARD && found) cornerSubPix( viewGray, pointbuf, Size(11,11),
             Size(-1,-1), TermCriteria( TermCriteria::EPS+TermCriteria::COUNT, 30, 0.1 ));
 
-        if( mode == CAPTURING && found &&
-           (!capture.isOpened() || clock() - prevTimestamp > delay*1e-3*CLOCKS_PER_SEC) )
+        if( mode == CAPTURING && found)
         {
             imagePoints.push_back(pointbuf);
-            prevTimestamp = clock();
-            blink = capture.isOpened();
         }
 
+        // Displaying the detected corner points on the checker board
         if(found)
             drawChessboardCorners( view, boardSize, Mat(pointbuf), found );
-
-        string msg = mode == CAPTURING ? "100/100" :
-            mode == CALIBRATED ? "Calibrated" : "Press 'g' to start";
-        int baseLine = 0;
-        Size textSize = getTextSize(msg, 1, 1, 1, &baseLine);
-        Point textOrigin(view.cols - 2*textSize.width - 10, view.rows - 2*baseLine - 10);
-
-        if( mode == CAPTURING )
-        {
-            if(undistortImage)
-                msg = format( "%d/%d Undist", (int)imagePoints.size(), nframes );
-            else
-                msg = format( "%d/%d", (int)imagePoints.size(), nframes );
-        }
-
-        putText( view, msg, textOrigin, 1, 1,
-                 mode != CALIBRATED ? Scalar(0,0,255) : Scalar(0,255,0));
-
-        if( blink )
-            bitwise_not(view, view);
 
         if( mode == CALIBRATED && undistortImage )
         {
@@ -493,7 +433,7 @@ int main( int argc, char** argv )
         }
 
         imshow("Image View", view);
-        char key = (char)waitKey(capture.isOpened() ? 50 : 500);
+        char key = (char)waitKey(500);
 
         if( key == 27 )
             break;
@@ -501,13 +441,7 @@ int main( int argc, char** argv )
         if( key == 'u' && mode == CALIBRATED )
             undistortImage = !undistortImage;
 
-        if( capture.isOpened() && key == 'g' )
-        {
-            mode = CAPTURING;
-            imagePoints.clear();
-        }
-
-        if( mode == CAPTURING && imagePoints.size() >= (unsigned)nframes )
+        if( mode == CAPTURING && imagePoints.size() >= (unsigned)nframes ) // extract imagePoints from all the frames
         {
             if( runAndSave(outputFilename, imagePoints, imageSize,
                        boardSize, pattern, squareSize, aspectRatio,
@@ -516,19 +450,17 @@ int main( int argc, char** argv )
                 mode = CALIBRATED;
             else
                 mode = DETECTION;
-            if( !capture.isOpened() )
-                break;
+            break;
         }
     }
 
-    if( !capture.isOpened() && showUndistorted )
+    if(showUndistorted )
     {
         Mat view, rview, map1, map2;
         initUndistortRectifyMap(cameraMatrix, distCoeffs, Mat(),
                                 getOptimalNewCameraMatrix(cameraMatrix, distCoeffs, imageSize, 1, imageSize, 0),
                                 imageSize, CV_16SC2, map1, map2);
 
-        //string savedPath = "/home/shuai/CLionProjects/x_ray_calibration/";
         for( i = 0; i < (int)imageList.size(); i++ )
         {
             view = imread(imageList[i], 1);
@@ -537,8 +469,6 @@ int main( int argc, char** argv )
             //undistort( view, rview, cameraMatrix, distCoeffs, cameraMatrix );
             remap(view, rview, map1, map2, INTER_LINEAR);
             imshow("Image View", rview);
-            //cv::imwrite(savedPath+"undistorted_images"+std::to_string(i+1)+".jpg",rview);
-            //cv::imwrite(savedPath+"distorted_images"+std::to_string(i+1)+".jpg", view);
             char c = (char)waitKey();
             if( c == 27 || c == 'q' || c == 'Q' )
                 break;
