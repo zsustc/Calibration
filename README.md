@@ -65,6 +65,7 @@ Read the "help()" function in the provided code to learn about a camera calibrat
 Using the "imagelist\_creator" function to create the xml or yaml list of stored images. You can also create the xml list of images manually using text editor.
 
 " \nexample command line for calibration from a list of stored images:\n"
+
 "   imagelist_creator image_list.xml *.png\n"
 "   calibration -w=4 -h=5 -s=0.025 -o=camera.yml -op -oe image_list.xml\n"
 " where image_list.xml is the standard OpenCV XML/YAML\n"
