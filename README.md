@@ -24,8 +24,11 @@
   Execute:
 
   mkdir build
+  
   cd build
+  
   cmake .. 
+  
   make
 
   This will create the executables x_ray_calibration and x_ray_calibration in the current folder.
