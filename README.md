@@ -124,6 +124,7 @@ Sample usage of detecting and drawing the centers of circles: :
                                      OutputArrayOfArrays rvecs, OutputArrayOfArrays tvecs,
                                      int flags = 0, TermCriteria criteria = TermCriteria(
                                         TermCriteria::COUNT + TermCriteria::EPS, 30, DBL_EPSILON) );**
+  
 where,
 
 objectPoints  A vector of vector of 3D points.
