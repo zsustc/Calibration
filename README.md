@@ -67,10 +67,15 @@ Using the "imagelist\_creator" function to create the xml or yaml list of stored
 " \nexample command line for calibration from a list of stored images:\n"
 
 "   imagelist_creator image_list.xml *.png\n"
+
 "   calibration -w=4 -h=5 -s=0.025 -o=camera.yml -op -oe image_list.xml\n"
+
 " where image_list.xml is the standard OpenCV XML/YAML\n"
+
 " use imagelist_creator to create the xml or yaml list\n"
+
 " file consisting of the list of strings, e.g.:\n"
+
 " \n"
 "<?xml version=\"1.0\"?>\n"
 "<opencv_storage>\n"
