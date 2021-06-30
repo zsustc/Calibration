@@ -110,20 +110,20 @@ Sample usage of detecting and drawing the centers of circles: :
 
     bool patternfound = findCirclesGrid(gray, patternsize, centers);
   
-  CV_EXPORTS_W bool findCirclesGrid( InputArray image, Size patternSize,
+  **CV_EXPORTS_W bool findCirclesGrid( InputArray image, Size patternSize,
                                    OutputArray centers, int flags = CALIB_CB_SYMMETRIC_GRID,
-                                   const Ptr<FeatureDetector> &blobDetector = SimpleBlobDetector::create());
+                                   const Ptr<FeatureDetector> &blobDetector = SimpleBlobDetector::create());**
 
 **7.Calibrate Camera**
   
   The final step of calibration is to pass the 3D points in world coordinates and their 2D locations in all images to OpenCV’s calibrateCamera method.
   
-  CV_EXPORTS_W double calibrateCamera( InputArrayOfArrays objectPoints,
+  **CV_EXPORTS_W double calibrateCamera( InputArrayOfArrays objectPoints,
                                      InputArrayOfArrays imagePoints, Size imageSize,
                                      InputOutputArray cameraMatrix, InputOutputArray distCoeffs,
                                      OutputArrayOfArrays rvecs, OutputArrayOfArrays tvecs,
                                      int flags = 0, TermCriteria criteria = TermCriteria(
-                                        TermCriteria::COUNT + TermCriteria::EPS, 30, DBL_EPSILON) );
+                                        TermCriteria::COUNT + TermCriteria::EPS, 30, DBL_EPSILON) );**
 where,
 
 objectPoints  A vector of vector of 3D points.
