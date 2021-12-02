@@ -104,9 +104,9 @@ static void calcChessboardCorners(Size boardSize, float squareSize, vector<Point
     {
       case CHESSBOARD:
       case CIRCLES_GRID:
-/********************************************************************************************************************/
-            /* please finish the function code here and push back the computed points to the vector "corners" */
-/********************************************************************************************************************/
+            for(int i = 0; i < boardSize.height; i++)
+                for(int j = 0; j < boardSize.width; j++)
+                    corners.push_back(Point3f(float((2*j + i %2)*squareSize), float(i*squareSize), 0));
         break;
       default:
         CV_Error(Error::StsBadArg, "Unknown pattern type\n");
@@ -136,9 +136,10 @@ static bool runCalibration( vector<vector<Point2f> > imagePoints,
     /* Performing camera calibration by passing the value of known 3D points (objectPoints) and corresponding pixel
     
      * coordinates of the detected corners (imagePoints) */
-/********************************************************************************************************************/
-    /* please try to call the calibrateCamera function here and return its value to the varibale "rms" */
-/********************************************************************************************************************/
+    
+    double rms = calibrateCamera(objectPoints, imagePoints, imageSize, cameraMatrix,
+                                 distCoeffs, rvecs, tvecs, flags|CALIB_FIX_K4|CALIB_FIX_K5);
+
     
     printf("RMS error reported by calibrateCamera: %g\n", rms);
 
