@@ -1,4 +1,4 @@
-**Calibration-of-a-C-arm-x-ray-device-Winter-school**
+**Calibration-of-a-C-arm-X-ray-device-Winter-school**
   Authors: Shuai Zhang
 
 **1. Datasets**
